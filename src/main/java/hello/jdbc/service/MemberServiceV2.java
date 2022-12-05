@@ -32,6 +32,7 @@ public class MemberServiceV2 {
         } catch (Exception e) {
             //실패 시 롤백
             con.rollback();
+            log.info("roll back !");
             throw new IllegalStateException(e);
         } finally {
             release(con);
