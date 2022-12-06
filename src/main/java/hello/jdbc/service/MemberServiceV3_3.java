@@ -23,7 +23,7 @@ public class MemberServiceV3_3 {
 
     @Transactional
     public void accountTransFer(String fromId, String toId, int money) throws SQLException {
-                bizLogic(fromId, toId, money);
+        bizLogic(fromId, toId, money);
     }
 
     private void bizLogic(String fromId, String toId, int money) throws SQLException {

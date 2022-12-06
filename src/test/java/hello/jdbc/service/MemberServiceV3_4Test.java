@@ -5,7 +5,6 @@ import hello.jdbc.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
@@ -25,12 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * 트랜잭션 - @Transactional AOP
+ * 트랜잭션 - DataSource, transactionManager
  */
 @Slf4j
 //AOP 사용을 위해선 Spring container 사용을 해야한다.
 @SpringBootTest
-class MemberServiceV3_3Test {
+class MemberServiceV3_4Test {
     private static final String MEMBER_A = "memberA";
     private static final String MEMBER_B = "memberB";
     private static final String MEMBER_EX = "ex";
@@ -43,22 +42,21 @@ class MemberServiceV3_3Test {
     //필요한 bean 주입
     @TestConfiguration
     static class TestConfig {
-        @Bean
-        DataSource datasource() {
-            System.out.println("TestConfig.datasource");
-            return new DriverManagerDataSource(URL, USERNAME, PASSWORD);
-        }
 
-        @Bean
-        PlatformTransactionManager transactionManager() {
-            System.out.println("TestConfig.transactionManager");
-            return new DataSourceTransactionManager(datasource());
+        private final DataSource dataSource;
+
+        @Autowired
+        public TestConfig(DataSource dataSource) {
+            //생성자 주입으로 db info 값을 가져올 수 있다.
+            //spring 에서 자동으로 bean으로 등록해서 반환해준다.
+            //Transaction manager 같은 경우도 spring이 만들어준다.
+            this.dataSource = dataSource;
         }
 
         @Bean
         MemberRepositoryV3 memberRepositoryV3() {
             System.out.println("TestConfig.memberRepositoryV3");
-            return new MemberRepositoryV3(datasource());
+            return new MemberRepositoryV3(dataSource);
         }
 
         @Bean
