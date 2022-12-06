@@ -58,18 +58,6 @@ public class MemberServiceV3_2 {
         memberRepository.update(toId, toMember.getMoney() + money);
     }
 
-    private static void release(Connection con) {
-        if (con != null) {
-            try {
-                //connection pool로 반환 할 때는 default 값인 true로 변경해줘야 한다.
-                con.setAutoCommit(true);
-                con.close();
-            } catch (Exception e) {
-                log.info("error", e);
-            }
-        }
-    }
-
     private static void validation(Member toMember) {
         if (toMember.getMemberId().equals("ex")) {
             throw new IllegalStateException("이체중 예외 발생");

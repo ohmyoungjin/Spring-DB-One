@@ -1,42 +1,29 @@
 package hello.jdbc.service;
 
-import hello.jdbc.Repository.MemberRepositoryV2;
 import hello.jdbc.Repository.MemberRepositoryV3;
 import hello.jdbc.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 트랜잭션 - 트랜잭션 매니저
+ * 트랜잭션 - @Transactional AOP
+ * 서비스 로직에서 순수 자바코드만 남게 됨.
  */
 @Slf4j
 @RequiredArgsConstructor
-public class MemberServiceV3_1 {
-    private final PlatformTransactionManager transactionManager;
+public class MemberServiceV3_3 {
+
     private final MemberRepositoryV3 memberRepository;
 
+    @Transactional
     public void accountTransFer(String fromId, String toId, int money) throws SQLException {
-        //트랜잭션 시작
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        try {
-            //비즈니스 로직
-            //비즈니스 로직은 따로 빼서 보는 것이 가독성이 좋다.
-            bizLogic(fromId, toId, money);
-            //정보 저장 commit
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            //실패 시 롤백
-            transactionManager.rollback(status);
-            log.info("roll back !");
-            throw new IllegalStateException(e);
-        }
+                bizLogic(fromId, toId, money);
     }
 
     private void bizLogic(String fromId, String toId, int money) throws SQLException {
