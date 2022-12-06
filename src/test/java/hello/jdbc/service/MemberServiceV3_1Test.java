@@ -1,13 +1,14 @@
 package hello.jdbc.service;
 
-import hello.jdbc.Repository.MemberRepositoryV1;
 import hello.jdbc.Repository.MemberRepositoryV2;
+import hello.jdbc.Repository.MemberRepositoryV3;
 import hello.jdbc.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.sql.SQLException;
@@ -23,21 +24,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * try catch 와 같은 구문이 반복해서 사용되며 소스가 지저분해진다.
  */
 @Slf4j
-class MemberServiceV2Test {
+class MemberServiceV3_1Test {
     private static final String MEMBER_A = "memberA";
     private static final String MEMBER_B = "memberB";
     private static final String MEMBER_EX = "ex";
 
-    private MemberRepositoryV2 memberRepository;
-    private MemberServiceV2 memberService;
+    private MemberRepositoryV3 memberRepository;
+    private MemberServiceV3_1 memberService;
 
 
     @BeforeEach
     void before() throws SQLException {
         //DB setting
+        //DI setting
         DriverManagerDataSource dataSource = new DriverManagerDataSource(URL, USERNAME, PASSWORD);
-        memberRepository= new MemberRepositoryV2(dataSource);
-        memberService = new MemberServiceV2(dataSource, memberRepository);
+        memberRepository= new MemberRepositoryV3(dataSource);
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+        memberService = new MemberServiceV3_1(transactionManager, memberRepository);
     }
 
     @AfterEach

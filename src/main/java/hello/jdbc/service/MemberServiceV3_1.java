@@ -1,57 +1,54 @@
 package hello.jdbc.service;
 
 import hello.jdbc.Repository.MemberRepositoryV2;
+import hello.jdbc.Repository.MemberRepositoryV3;
 import hello.jdbc.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 트랜잭션 - 파라미터 연동, 풀을 고려한 종료
+ * 트랜잭션 - 트랜잭션 매니저
  */
 @Slf4j
 @RequiredArgsConstructor
-public class MemberServiceV2 {
-    private final DataSource dataSource;
-    private final MemberRepositoryV2 memberRepository;
+public class MemberServiceV3_1 {
+    private final PlatformTransactionManager transactionManager;
+    private final MemberRepositoryV3 memberRepository;
 
     public void accountTransFer(String fromId, String toId, int money) throws SQLException {
-        //트랜잭션 처리할 때는 같은 connection을 써야한다.
-        Connection con = dataSource.getConnection();
+        //트랜잭션 시작
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
-            //트랜젝션 시작 AutoCommit 끈다.
-            con.setAutoCommit(false);
             //비즈니스 로직
             //비즈니스 로직은 따로 빼서 보는 것이 가독성이 좋다.
-            bizLogic(con, fromId, toId, money);
+            bizLogic(fromId, toId, money);
             //정보 저장 commit
-            con.commit();
+            transactionManager.commit(status);
         } catch (Exception e) {
             //실패 시 롤백
-            con.rollback();
+            transactionManager.rollback(status);
             log.info("roll back !");
             throw new IllegalStateException(e);
-        } finally {
-            //트랜잭션 시작 하는 곳에서 connection 맺고 끊어줘야 한다.
-            //connection 끊는 부분
-            release(con);
         }
-
     }
 
-    private void bizLogic(Connection con, String fromId, String toId, int money) throws SQLException {
+    private void bizLogic(String fromId, String toId, int money) throws SQLException {
         //입금자
-        Member fromMember = memberRepository.findById(con, fromId);
+        Member fromMember = memberRepository.findById(fromId);
         //받는자
-        Member toMember = memberRepository.findById(con, toId);
+        Member toMember = memberRepository.findById(toId);
 
-        memberRepository.update(con, fromId, fromMember.getMoney() - money);
+        memberRepository.update(fromId, fromMember.getMoney() - money);
         //검증
         validation(toMember);
-        memberRepository.update(con, toId, toMember.getMoney() + money);
+        memberRepository.update(toId, toMember.getMoney() + money);
     }
 
     private static void release(Connection con) {
