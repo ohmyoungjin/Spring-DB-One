@@ -1,14 +1,11 @@
 package hello.jdbc.service;
 
-import hello.jdbc.Repository.MemberRepositoryV3;
+import hello.jdbc.repository.MemberRepositoryV3;
 import hello.jdbc.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**

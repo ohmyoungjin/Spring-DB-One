@@ -1,8 +1,7 @@
 package hello.jdbc.service;
 
-import hello.jdbc.Repository.MemberRepository;
-import hello.jdbc.Repository.MemberRepositoryV3;
-import hello.jdbc.Repository.MemberRepositoryV4_1;
+import hello.jdbc.repository.MemberRepository;
+import hello.jdbc.repository.MemberRepositoryV4_1;
 import hello.jdbc.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -1,9 +1,7 @@
 package hello.jdbc.service;
 
-import hello.jdbc.Repository.MemberRepositoryV1;
-import hello.jdbc.connection.ConnectionConst;
+import hello.jdbc.repository.MemberRepositoryV1;
 import hello.jdbc.domain.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +12,6 @@ import java.sql.SQLException;
 
 import static hello.jdbc.connection.ConnectionConst.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 기본 동작, 트랜젝션이 없으므로 문제 발생
