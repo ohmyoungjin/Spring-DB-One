@@ -41,8 +41,6 @@ public class MemberRepositoryV3 {
         }finally {
             close(con, pstmt, null);
         }
-
-
     }
 
     public Member findById(String memberId) throws SQLException {
