@@ -63,6 +63,7 @@ public class SpringExceptionTranslatorTest {
             SQLErrorCodeSQLExceptionTranslator exTranslator = new SQLErrorCodeSQLExceptionTranslator(dataSource);
 
             //BadSqlGrammarException 문법 문제
+            //exTranslator.translate("select", sql, e); 자체 return 값이 Exception class가 된다.
             DataAccessException resultEx = exTranslator.translate("select", sql, e);
             log.info("resultEx", resultEx);
             assertThat(resultEx.getClass()).isEqualTo(BadSqlGrammarException.class);
