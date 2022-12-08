@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * MemberRepository interface 의존
  */
 @Slf4j
-public class MemberServiceV4 {
+public class MemberServiceV4 implements MemberService{
 
     private final MemberRepository memberRepository;
 
@@ -20,12 +20,14 @@ public class MemberServiceV4 {
         this.memberRepository = memberRepository;
     }
 
+    @Override
     @Transactional
     public void accountTransFer(String fromId, String toId, int money){
         bizLogic(fromId, toId, money);
     }
 
-    private void bizLogic(String fromId, String toId, int money){
+    @Override
+    public void bizLogic(String fromId, String toId, int money){
         //입금자
         Member fromMember = memberRepository.findById(fromId);
         //받는자

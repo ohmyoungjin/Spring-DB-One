@@ -34,13 +34,15 @@ class MemberServiceV4Test {
     private static final String MEMBER_A = "memberA";
     private static final String MEMBER_B = "memberB";
     private static final String MEMBER_EX = "ex";
+    //bean 주입
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private MemberServiceV4 memberService;
+    private MemberService memberService;
 
     //Spring container 설정
-    //필요한 bean 주입
+    //필요한 bean 생성
+    //Webconfig 같은 file
     @TestConfiguration
     static class TestConfig {
 
@@ -52,6 +54,11 @@ class MemberServiceV4Test {
             //spring 에서 자동으로 bean으로 등록해서 반환해준다.
             //Transaction manager 같은 경우도 spring이 만들어준다.
             this.dataSource = dataSource;
+        }
+
+        @Bean
+        MemberService memberService() {
+            return new MemberServiceV4(memberRepository());
         }
 
         @Bean
